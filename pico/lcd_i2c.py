@@ -48,7 +48,7 @@ class PCF8574LCD:
     def _write_nibble(self, value, is_data):
         output = self.rs if is_data else 0
         for bit_index in range(4):
-            if value & (1 << (3 - bit_index)):
+            if value & (1 << bit_index):
                 output |= self.data_pins[bit_index]
 
         output &= ~self.rw
