@@ -150,8 +150,9 @@ $port.Close()
 The command should print `OK RECYCLE`. Change the text passed to `WriteLine`
 to test the other commands. Set `NewLine` to LF; the firmware also accepts
 CRLF. USB CDC does not generally use the baud rate as a physical timing
-setting, but `115200` is a conventional host configuration and matches a
-typical backend serial setup. On Linux, the Pico commonly appears as
+setting, but `115200` is a conventional host serial-port configuration. Use
+the same setting in the backend when its serial interface is configured. On
+Linux, the Pico commonly appears as
 `/dev/ttyACM0`; use the actual device name reported by the system.
 
 Close Thonny before the backend or another serial client opens the port; only
