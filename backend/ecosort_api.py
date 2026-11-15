@@ -3,15 +3,16 @@
 Usage in backend/main.py, BEFORE the frontend static mount:
 
     from backend.ecosort_api import create_ecosort_router
-    from rules.engine import recommend
-    app.include_router(create_ecosort_router(settings, hardware, recognizer, recommend))
+    app.include_router(create_ecosort_router(settings, hardware, recognizer))
 
-Works with the existing settings / MockSerialAdapter / MockProvider contracts.
+Recognition results pass through the Pennsylvania rules adapter before hardware dispatch.
 """
 from __future__ import annotations
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
+
+from rules.p2_adapter import process_recognition
 
 VALID_BINS = {"RECYCLE", "COMPOST", "LANDFILL", "UNKNOWN"}
 VALID_COMMANDS = VALID_BINS | {"OFF"}
@@ -43,7 +44,7 @@ def send_ack(hardware, command):
     return reply.strip()
 
 
-def create_ecosort_router(settings, hardware, recognizer, recommend):
+def create_ecosort_router(settings, hardware, recognizer):
     router = APIRouter()
 
     @router.post("/api/command")
@@ -76,37 +77,66 @@ def create_ecosort_router(settings, hardware, recognizer, recommend):
             recognition = as_dict(recognizer.recognize(image, hint=use_hint))
         except Exception as error:
             raise HTTPException(status_code=502, detail=f"Recognition failed: {error}") from error
-        if recognition.get("needs_clarification") or not recognition.get("item"):
+        try:
+            decision = process_recognition(
+                recognition,
+                location=settings.location,
+                demo_mode=settings.demo_mode,
+            )
+        except Exception as error:
+            raise HTTPException(status_code=500, detail=f"Rule evaluation failed: {error}") from error
+
+        objects = decision.get("objects", [])
+        if not isinstance(objects, list):
+            objects = []
+        for result in objects:
+            if isinstance(result, dict):
+                result["demo"] = (
+                    str(result.get("rule_id") or "").startswith("DEMO_")
+                    or str(result.get("message") or "").startswith("DEMO ONLY")
+                )
+        is_multi = decision.get("multiple_items") is True
+        if is_multi:
             recommendation = {
-                "bin": "UNKNOWN", "message": "Not enough information to safely recommend a disposal bin.",
-                "rule_id": None, "source_url": None, "demo": False,
+                "bin": "UNKNOWN",
+                "message": decision.get("message", "Select an item before sorting."),
+                "needs_clarification": True,
             }
+        elif objects:
+            recommendation = dict(objects[0])
         else:
-            try:
-                recommendation = as_dict(recommend(recognition["item"], settings.location))
-            except Exception as error:
-                raise HTTPException(status_code=500, detail=f"Rule evaluation failed: {error}") from error
-        if recommendation.get("bin") not in VALID_BINS:
             recommendation = {
-                "bin": "UNKNOWN", "message": "No validated local disposal rule could be applied.",
-                "rule_id": None, "source_url": None, "demo": False,
+                "bin": "UNKNOWN",
+                "message": decision.get("message", "No usable disposal recommendation is available."),
+                "needs_clarification": True,
             }
-        bin_name = recommendation["bin"]
+        recommendation["demo"] = (
+            str(recommendation.get("rule_id") or "").startswith("DEMO_")
+            or str(recommendation.get("message") or "").startswith("DEMO ONLY")
+        )
+
         commands_sent = []
         pico_replies = []
         hardware_error = None
-        # Recognition and rules are returned even if the Pico has disconnected.
-        try:
-            commands_sent.append(bin_name)
-            pico_replies.append(send_ack(hardware, bin_name))
-            item_text = lcd_label(recognition.get("item"))
-            text_command = "TEXT " + item_text
-            commands_sent.append(text_command)
-            pico_replies.append(send_ack(hardware, text_command))
-        except Exception as error:
-            hardware_error = str(error)
+        if not is_multi:
+            # Never send one collective bin when several items were detected.
+            item = recommendation.get("item") or recognition.get("item")
+            bin_name = recommendation.get("bin")
+            if bin_name not in VALID_BINS:
+                bin_name = "UNKNOWN"
+            try:
+                commands_sent.append(bin_name)
+                pico_replies.append(send_ack(hardware, bin_name))
+                text_command = "TEXT " + lcd_label(item)
+                commands_sent.append(text_command)
+                pico_replies.append(send_ack(hardware, text_command))
+            except Exception as error:
+                hardware_error = str(error)
         return {
             "recognition": recognition, "recommendation": recommendation,
+            "objects": objects,
+            "object_count": decision.get("object_count", len(objects)),
+            "multiple_items": is_multi,
             "commands_sent": commands_sent, "pico_replies": pico_replies,
             "mock_recognition": str(settings.recognition_provider).lower() == "mock",
             "mock_hardware": bool(hardware.is_mock), "hardware_error": hardware_error,

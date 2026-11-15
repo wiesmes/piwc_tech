@@ -11,7 +11,6 @@ from backend.hardware.mock_link import MockSerialAdapter
 from backend.hardware.serial_link import SerialConnectionError, SerialHardwareAdapter
 from backend.recognition.mock_provider import MockProvider
 from backend.config import Settings
-from rules.engine import recommend
 
 settings = Settings()
 hardware_mode = os.environ.get("ECOSORT_HARDWARE_MODE", "mock").strip().lower()
@@ -28,6 +27,10 @@ else:
         f"not {hardware_mode!r}"
     )
 
+# The experimental classifier is not yet a byte-oriented API provider.
+# Reject unsupported modes rather than label mock output as real recognition.
+if settings.recognition_provider != "mock":
+    raise ValueError("Only ECOSORT_RECOGNITION_PROVIDER=mock is currently wired to the API")
 recognizer = MockProvider()
 
 
@@ -62,6 +65,7 @@ def status():
         'camera_connected': False,
         'recognition_provider': settings.recognition_provider,
         'location': settings.location,
+        'demo_mode': settings.demo_mode,
     }
 
 
@@ -71,5 +75,5 @@ def button_events():
     return {"events": events}
 
 
-app.include_router(create_ecosort_router(settings, hardware, recognizer, recommend))
+app.include_router(create_ecosort_router(settings, hardware, recognizer))
 app.mount('/', StaticFiles(directory=str(Path(__file__).resolve().parents[1] / 'frontend'), html=True), name='frontend')
