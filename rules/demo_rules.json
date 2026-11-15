@@ -1,0 +1,44 @@
+{
+  "location_id": "DEMO_ONLY",
+  "demo_only": true,
+  "compost_stream_confirmed": false,
+  "rules": [
+    {
+      "rule_id": "DEMO_RECYCLE_CAN",
+      "status": "demo",
+      "demo_only": true,
+      "item": "practice can",
+      "aliases": [
+        "demo can"
+      ],
+      "bin": "RECYCLE",
+      "requires": {
+        "empty": true
+      },
+      "question_when_missing": "Is the practice can empty?",
+      "message": "This sample rule is for demonstrating the software and lights only."
+    },
+    {
+      "rule_id": "DEMO_LANDFILL_WRAPPER",
+      "status": "demo",
+      "demo_only": true,
+      "item": "practice wrapper",
+      "aliases": [],
+      "bin": "LANDFILL",
+      "requires": {},
+      "message": "This sample rule is for demonstrating the software and lights only."
+    },
+    {
+      "rule_id": "DEMO_COMPOST_BANANA",
+      "status": "demo",
+      "demo_only": true,
+      "item": "practice banana peel",
+      "aliases": [
+        "demo banana peel"
+      ],
+      "bin": "COMPOST",
+      "requires": {},
+      "message": "Artificial compost result for demonstration only."
+    }
+  ]
+}
