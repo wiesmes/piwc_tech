@@ -101,6 +101,17 @@ def _process_one(obj: Mapping[str, Any], *,
         return _blocked(obj, 'The material is unknown or unsupported.',
                         question='Please confirm the material or use the appropriate special collection.')
 
+    # P2 may explicitly report agreement between equivalent item descriptions,
+    # e.g. "sheet of paper" (detector) and "office paper" (classifier).
+    # An explicit negative or malformed value must never bypass this safety gate.
+    # Older payloads without item_agreement are handled below in multi-object mode.
+    if 'item_agreement' in obj:
+        if type(obj['item_agreement']) is not bool:
+            return _blocked(obj, 'The item-agreement flag is invalid.',
+                            question='Please confirm the item.')
+        if obj['item_agreement'] is False:
+            return _blocked(obj, 'The detector and classifier disagree about the item.',
+                            question=str(obj.get('question') or 'Please identify this item.'))
     if obj.get('prediction_agreement') is False:
         return _blocked(obj, 'The item and material predictions disagree.',
                         question='Please confirm the item and its material.')
@@ -114,14 +125,15 @@ def _process_one(obj: Mapping[str, Any], *,
     if is_multi:
         if fusion != 'material_agreement':
             return _blocked(obj, 'The multi-object recognition agreement is not verified.')
-        detector_label = obj.get('detector_label')
-        # P2's fusion_status checks materials only, not object identity. Until
-        # P2 provides a dependable item-identity agreement field, mismatched
-        # names must be confirmed by a user (aliases can be normalized by P2).
-        if (not isinstance(detector_label, str)
-                or _norm(detector_label) != _norm(item)):
-            return _blocked(obj, 'The detector and classifier disagree about the item.',
-                            question=str(obj.get('question') or 'Please identify this item.'))
+        # New P2 payloads use the explicit boolean item_agreement checked
+        # above. Legacy payloads must still match exact normalized strings;
+        # never infer agreement from material agreement alone.
+        if 'item_agreement' not in obj:
+            detector_label = obj.get('detector_label')
+            if (not isinstance(detector_label, str)
+                    or _norm(detector_label) != _norm(item)):
+                return _blocked(obj, 'The detector and classifier disagree about the item.',
+                                question=str(obj.get('question') or 'Please identify this item.'))
 
     # Conditions that can be answered by a user are different from uncertain
     # identity/material. Require P2's structured clarification_type and explicit

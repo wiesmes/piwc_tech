@@ -163,5 +163,30 @@ class PennsylvaniaP4Tests(unittest.TestCase):
         self.assertEqual(r['bin'], 'UNKNOWN')
 
 
+class CameraDemoCoreIsolationTests(unittest.TestCase):
+    def test_demo_labels_exist_in_core_only_with_explicit_opt_in(self):
+        cases = [('plastic water bottle', 'RECYCLE', {'empty': True}),
+                 ('leftover food scraps', 'COMPOST', None),
+                 ('paper napkin', 'LANDFILL', None)]
+        for item, expected_bin, attrs in cases:
+            with self.subTest(item=item):
+                recognition = rec(item)
+                demo = decide(recognition, location='DEMO_ONLY',
+                              demo_mode=True, attributes=attrs)
+                self.assertEqual(demo['bin'], expected_bin)
+                self.assertTrue(demo['message'].startswith('DEMO ONLY'))
+                self.assertIsNone(demo['source_url'])
+                self.assertEqual(decide(recognition)['bin'], 'UNKNOWN')
+                self.assertEqual(decide(recognition, demo_mode=True)['bin'], 'UNKNOWN')
+                self.assertEqual(decide(recognition, location='DEMO_ONLY')['bin'], 'UNKNOWN')
+
+    def test_new_bottle_rule_never_ignores_empty_requirement(self):
+        for attrs in (None, {}, {'empty': False}, {'empty': 'yes'}):
+            with self.subTest(attrs=attrs):
+                result = decide(rec('plastic water bottle'), location='DEMO_ONLY',
+                                demo_mode=True, attributes=attrs)
+                self.assertEqual(result['bin'], 'UNKNOWN')
+
+
 if __name__ == '__main__':
     unittest.main()

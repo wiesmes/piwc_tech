@@ -39,6 +39,39 @@
       "bin": "COMPOST",
       "requires": {},
       "message": "Artificial compost result for demonstration only."
+    },
+    {
+      "rule_id": "DEMO_CAMERA_RECYCLE_BOTTLE",
+      "status": "demo",
+      "demo_only": true,
+      "item": "plastic water bottle",
+      "aliases": [],
+      "bin": "RECYCLE",
+      "requires": {
+        "empty": true
+      },
+      "question_when_missing": "Is the plastic water bottle empty?",
+      "message": "Simulated recycling choice for the camera demo; local Pennsylvania collection acceptance has NOT been verified."
+    },
+    {
+      "rule_id": "DEMO_CAMERA_COMPOST_FOOD",
+      "status": "demo",
+      "demo_only": true,
+      "item": "leftover food scraps",
+      "aliases": [],
+      "bin": "COMPOST",
+      "requires": {},
+      "message": "Simulated compost choice for the camera demo; this does NOT verify that a compost collection stream is available."
+    },
+    {
+      "rule_id": "DEMO_CAMERA_LANDFILL_NAPKIN",
+      "status": "demo",
+      "demo_only": true,
+      "item": "paper napkin",
+      "aliases": [],
+      "bin": "LANDFILL",
+      "requires": {},
+      "message": "Simulated landfill choice for the camera demo; local Pennsylvania disposal instructions have NOT been verified."
     }
   ]
 }
