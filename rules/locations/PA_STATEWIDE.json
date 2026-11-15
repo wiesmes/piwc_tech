@@ -1,0 +1,232 @@
+{
+  "location_id": "PA_STATEWIDE",
+  "region": "Pennsylvania, USA",
+  "source_agency": "Pennsylvania Department of Environmental Protection",
+  "verified_on": "2026-11-14",
+  "purpose": "Statewide source-backed advisories only; no universal recycling or compost bin assignments.",
+  "advisories": [
+    {
+      "rule_id": "PA-RECY-001",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "aluminum can",
+      "aliases": [
+        "soda can",
+        "empty aluminum can",
+        "drink can"
+      ],
+      "message": "Aluminum cans are a recognized recyclable category, but Pennsylvania does not publish a universal bin-acceptance rule for every local collection program. Check your municipality or hauler, and whether the can is empty.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-002",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "plastic bottle",
+      "aliases": [
+        "plastic water bottle",
+        "water bottle",
+        "empty plastic bottle"
+      ],
+      "message": "Plastic acceptance depends on the local recycling program, not the recycling symbol alone. Check your municipality or hauler and whether the bottle is empty.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-003",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "glass bottle",
+      "aliases": [
+        "glass jar",
+        "empty glass bottle"
+      ],
+      "message": "Check local glass-container recycling acceptance and any preparation instructions before placing this in a bin.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-004",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "cardboard box",
+      "aliases": [
+        "corrugated cardboard box",
+        "clean cardboard box",
+        "shipping box"
+      ],
+      "message": "Corrugated paper is included among recyclable categories in Pennsylvania programs, but check local collection requirements and confirm the cardboard is clean.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-005",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "office paper",
+      "aliases": [
+        "printer paper",
+        "clean office paper"
+      ],
+      "message": "Check your local recycling program for paper collection and any restrictions on contaminated paper.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-006",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "pizza box",
+      "aliases": [
+        "greasy pizza box",
+        "soiled pizza box"
+      ],
+      "message": "A pizza box can be food-soiled. Check the local program before choosing recycling, compost, or landfill; Pennsylvania statewide guidance does not make that decision for every community.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-007",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "paper coffee cup",
+      "aliases": [
+        "coffee cup",
+        "coated coffee cup"
+      ],
+      "message": "Do not infer recyclability or compostability from the word paper: coatings and local acceptance matter. Check the collection program and packaging.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-008",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "snack wrapper",
+      "aliases": [
+        "chip bag",
+        "food wrapper",
+        "plastic snack wrapper"
+      ],
+      "message": "Mixed-material wrappers may not be accepted by curbside programs. Check packaging and the local program; do not guess from appearance.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-RECY-009",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "plastic takeout container",
+      "aliases": [
+        "takeout container",
+        "plastic clamshell"
+      ],
+      "message": "Resin type, contamination, and local program acceptance matter. Check your local program before choosing a bin.",
+      "source_url": "https://www.pa.gov/agencies/dep/residents/recycling-and-disposal",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-COMP-001",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "food scraps",
+      "aliases": [
+        "food waste",
+        "banana peel",
+        "apple core",
+        "leftover salad"
+      ],
+      "message": "Pennsylvania has composting programs, but food scraps are not accepted in every local bin. Confirm that a suitable food-waste collection stream is available and accepts this material.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/recycling-in-pennsylvania/composting",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-COMP-002",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "compostable fork",
+      "aliases": [
+        "compostable plastic fork",
+        "bioplastic fork"
+      ],
+      "message": "A compostable label does not show that your collection program accepts this item. Confirm the specific receiving facility and acceptance conditions before using compost.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/recycling-in-pennsylvania/composting",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-COMP-003",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "leaves",
+      "aliases": [
+        "leaf waste",
+        "yard waste"
+      ],
+      "message": "Leaf-waste collection requirements apply in specified municipalities, but availability and collection details vary. Check your local municipal program.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/recycling-in-pennsylvania/composting",
+      "special_collection": false
+    },
+    {
+      "rule_id": "PA-EWASTE-001",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "laptop",
+      "aliases": [
+        "computer",
+        "desktop computer",
+        "computer monitor",
+        "television",
+        "tv",
+        "printer",
+        "keyboard"
+      ],
+      "message": "Covered electronics require specialized recycling arrangements. Do not place this item in the three ordinary demonstration bins. Use Pennsylvania DEP electronics collection resources and verify a collection site.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/recycling-in-pennsylvania/electronics-recycling",
+      "special_collection": true
+    },
+    {
+      "rule_id": "PA-BATT-001",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "lithium-ion battery",
+      "aliases": [
+        "rechargeable battery",
+        "lithium battery",
+        "power bank"
+      ],
+      "message": "Do not place a lithium-ion/rechargeable battery into the demonstration landfill or recycling bins; improper handling can cause fires. Check battery-specific collection and preparation guidance.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/recycling-in-pennsylvania/public-recycling-resources/household-battery-recycling",
+      "special_collection": true
+    },
+    {
+      "rule_id": "PA-BATT-002",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "alkaline battery",
+      "aliases": [
+        "aa battery",
+        "aaa battery",
+        "single-use battery"
+      ],
+      "message": "Pennsylvania DEP says common single-use alkaline batteries can generally go in regular household trash, but first confirm chemistry. The demonstration station does not accept batteries; check local alternatives.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/recycling-in-pennsylvania/public-recycling-resources/household-battery-recycling",
+      "special_collection": true
+    },
+    {
+      "rule_id": "PA-HHW-001",
+      "status": "verified",
+      "verified_on": "2026-11-14",
+      "item": "paint can",
+      "aliases": [
+        "leftover paint",
+        "household chemicals",
+        "propane cylinder"
+      ],
+      "message": "This may need household hazardous waste or another dedicated collection option; do not put it into the three demonstration bins. Follow the package label and Pennsylvania DEP household hazardous waste guidance.",
+      "source_url": "https://www.pa.gov/agencies/dep/programs-and-services/waste-programs/solid-waste-programs/hazardous-waste-program/household",
+      "special_collection": true
+    }
+  ],
+  "rules": []
+}

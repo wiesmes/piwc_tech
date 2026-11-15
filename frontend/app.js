@@ -80,30 +80,96 @@ dropzone.addEventListener('drop', e => {
 
 const BIN_ICONS = {RECYCLE:'♻', COMPOST:'❀', LANDFILL:'▤', UNKNOWN:'?'};
 function badge(label, extra='') { const el=document.createElement('span'); el.className=`badge ${extra}`; el.textContent=label; $('result-badges').appendChild(el); }
+function safeSource(url) {
+  try {
+    const parsed = new URL(url);
+    return ['https:','http:'].includes(parsed.protocol) ? parsed.href : null;
+  } catch (_) { return null; }
+}
+function renderMultiResults(objects) {
+  const container = $('multi-results');
+  container.replaceChildren();
+  for (const result of objects) {
+    const card = document.createElement('article');
+    card.className = 'multi-result';
+    const heading = document.createElement('div');
+    heading.className = 'multi-result-heading';
+    const item = document.createElement('h3');
+    item.textContent = result.item || `Detected item ${result.object_id || ''}`.trim();
+    const bin = document.createElement('span');
+    bin.className = `badge bin-badge bin-${String(result.bin || 'UNKNOWN').toLowerCase()}`;
+    bin.textContent = ['RECYCLE','COMPOST','LANDFILL','UNKNOWN'].includes(result.bin) ? result.bin : 'UNKNOWN';
+    heading.append(item, bin);
+    const material = document.createElement('p');
+    material.className = 'multi-material';
+    material.textContent = `Material: ${result.material || 'Unknown'}`;
+    const explanation = document.createElement('p');
+    explanation.className = 'multi-explanation';
+    explanation.textContent = result.message || result.explanation || 'No verified disposal guidance is available.';
+    card.append(heading, material, explanation);
+    if (result.question) {
+      const question = document.createElement('p');
+      question.className = 'multi-question';
+      question.textContent = `What to check: ${result.question}`;
+      card.append(question);
+    }
+    const source = safeSource(result.source_url);
+    if (source) {
+      const link = document.createElement('a');
+      link.href = source;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'View official guidance ↗';
+      card.append(link);
+    }
+    if (result.rule_checked_date) {
+      const checked = document.createElement('small');
+      checked.className = 'rule-date';
+      checked.textContent = `Rule checked: ${result.rule_checked_date}`;
+      card.append(checked);
+    }
+    container.append(card);
+  }
+}
 function renderResult(data) {
   const recognition = data.recognition || {};
   const rule = data.recommendation || data.rules || {};
+  const objects = Array.isArray(data.objects) ? data.objects : [];
+  const multi = data.multiple_items === true && objects.length > 1;
   const bin = ['RECYCLE','COMPOST','LANDFILL','UNKNOWN'].includes(rule.bin) ? rule.bin : 'UNKNOWN';
-  $('result-empty').hidden = true; $('result-content').hidden = false;
+  $('result-empty').hidden = true;
+  $('result-content').hidden = multi;
+  $('multi-results').hidden = !multi;
   $('result-badges').replaceChildren();
   if (data.mock_recognition === true || recognition.mock === true) badge('MOCK');
-  if (rule.demo === true) badge('DEMO','demo');
+  if (rule.demo === true || objects.some(item => item.demo === true)) badge('DEMO','demo');
+  if (multi) {
+    renderMultiResults(objects);
+    const count = Number.isInteger(data.object_count) ? data.object_count : objects.length;
+    $('multi-results').prepend(Object.assign(document.createElement('p'), {
+      className: 'multi-summary',
+      textContent: `${count} items detected. Each item has a separate recommendation; no single bin command was sent.`
+    }));
+    return;
+  }
+  const result = objects.length === 1 ? objects[0] : rule;
   $('bin-name').textContent = bin;
   $('bin-icon').textContent = BIN_ICONS[bin];
   $('bin-icon').style.background = ({RECYCLE:'#deeee1',COMPOST:'#fcf0c8',LANDFILL:'#fde4e0',UNKNOWN:'#e6e9ec'})[bin];
   $('bin-icon').style.color = ({RECYCLE:'#2d8047',COMPOST:'#97701c',LANDFILL:'#b75a4a',UNKNOWN:'#606a78'})[bin];
-  $('result-item').textContent = recognition.item || 'Could not identify item';
-  $('item-value').textContent = recognition.item || 'Unknown';
-  $('material-value').textContent = recognition.material || 'Not determined';
-  $('result-message').textContent = rule.message || 'No verified disposal rule is available for this item and location.';
-  const question = recognition.question || (recognition.needs_clarification ? 'Check the item’s packaging or ask your local waste provider.' : null);
+  $('result-item').textContent = result.item || recognition.item || 'Could not identify item';
+  $('item-value').textContent = result.item || recognition.item || 'Unknown';
+  $('material-value').textContent = result.material || recognition.material || 'Not determined';
+  $('result-message').textContent = result.message || result.explanation || rule.message || 'No verified disposal rule is available for this item and location.';
+  const question = result.question || recognition.question || (result.needs_clarification || recognition.needs_clarification ? 'Check the item’s packaging or ask your local waste provider.' : null);
   $('clarification').hidden = !question;
   $('clarification-text').textContent = question || '';
-  const rawUrl = rule.source_url;
-  let safeUrl = null;
-  try { if(rawUrl) { const u = new URL(rawUrl); if(['https:','http:'].includes(u.protocol)) safeUrl=u.href; } } catch (_) {}
+  const safeUrl = safeSource(result.source_url || rule.source_url);
   $('source-wrap').hidden = !safeUrl;
   if(safeUrl) $('source-link').href = safeUrl; else $('source-link').removeAttribute('href');
+  const checkedDate = result.rule_checked_date;
+  $('rule-date-wrap').hidden = !checkedDate;
+  $('rule-date').textContent = checkedDate || '';
   const sent = (data.commands_sent || []).join(' → ');
   const replies = (data.pico_replies || []).join(' · ');
   const hw = data.mock_hardware ? 'MOCK Pico' : 'Pico';
@@ -132,7 +198,7 @@ $('classify-form').addEventListener('submit', async e => {
     $('scan-error').hidden=false;
   } finally { busy=false; $('classify-button').disabled=false; $('classify-button-text').textContent='Identify & Sort'; }
 });
-$('scan-again').addEventListener('click', () => { $('photo').value='';setPhoto(null);$('hint').value='';$('result-empty').hidden=false;$('result-content').hidden=true;$('result-badges').replaceChildren();$('scanner-heading').scrollIntoView({behavior:'smooth',block:'start'}); });
+$('scan-again').addEventListener('click', () => { $('photo').value='';setPhoto(null);$('hint').value='';$('result-empty').hidden=false;$('result-content').hidden=true;$('multi-results').hidden=true;$('multi-results').replaceChildren();$('result-badges').replaceChildren();$('scanner-heading').scrollIntoView({behavior:'smooth',block:'start'}); });
 
 document.querySelectorAll('[data-command]').forEach(button => button.addEventListener('click', async () => {
   const command = button.dataset.command;
