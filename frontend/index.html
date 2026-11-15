@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9f4">
+  <meta name="description" content="EcoSort identifies waste items and checks local disposal rules before recommending a bin.">
+  <title>EcoSort · Know before you throw</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a href="/" class="brand" aria-label="EcoSort home"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M16 4c10 2 13 12 7 20-5 6-15 5-19-2 2-8 8-14 20-15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 25c3-7 8-11 17-15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span><span>eco<span class="brand-light">sort</span><span class="brand-dot">.</span></span></a>
+      <div class="top-meta"><span class="event-label">HACKPRINCETON 2026</span><span class="separator"></span><span class="live-indicator"><span class="live-dot"></span> DEMO CONSOLE</span></div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> SMARTER WASTE. SMALLER FOOTPRINT.</div><h1 id="hero-heading">Know before<br>you <em>throw.</em></h1><p>One photo. A clearer answer. EcoSort identifies your item, checks local disposal rules, and tells you where it belongs — or what to check next.</p><div class="hero-tags"><span><span class="tiny-orb"></span> AI-powered identification</span><span><span class="tiny-orb"></span> Location-aware rules</span><span><span class="tiny-orb"></span> No guessing</span></div></div>
+        <div class="hero-art" aria-hidden="true"><div class="art-orbit art-orbit-a"></div><div class="art-orbit art-orbit-b"></div><div class="art-circle"><svg viewBox="0 0 180 180" fill="none"><path d="M60 55h60l-8 89H68L60 55Z" fill="#E7F0D9" stroke="#30583A" stroke-width="5" stroke-linejoin="round"/><path d="M53 55h74" stroke="#30583A" stroke-width="6" stroke-linecap="round"/><path d="M77 42h26" stroke="#30583A" stroke-width="6" stroke-linecap="round"/><path d="M76 75v52M90 75v52M104 75v52" stroke="#76A47B" stroke-width="5" stroke-linecap="round"/><path d="M140 34l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10Z" fill="#92B867"/><circle cx="39" cy="104" r="6" fill="#A5C989"/></svg></div><div class="floating-label">A BETTER BIN DECISION <span>✳</span></div></div>
+      </section>
+      <section class="workspace" aria-label="EcoSort scanner and results">
+        <div class="main-column">
+          <article class="panel scanner-card" aria-labelledby="scanner-heading">
+            <div class="panel-heading"><div><div class="step-label">01 / SCAN AN ITEM</div><h2 id="scanner-heading">What are you throwing away?</h2><p>Take a photo or upload an image of a single item.</p></div><span class="round-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l2-3h4l2 3h4v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span></div>
+            <form id="classify-form">
+              <div class="dropzone" id="dropzone"><input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/*" capture="environment" aria-describedby="upload-help" required><div id="empty-preview" class="drop-instructions"><div class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4"/></svg></div><strong>Drop your photo here</strong><span>or <span class="browse-link">browse files / take a photo</span></span><small id="upload-help">JPG, PNG, WEBP · up to 10 MB · HEIC may not be supported by the recognition model</small></div><img id="photo-preview" alt="Selected waste item preview" hidden><div class="preview-overlay" id="preview-overlay" hidden>Change photo</div></div>
+              <div class="selected-file" id="selected-file" hidden><span id="file-name"></span><button type="button" class="quiet-button" id="clear-photo">Remove</button></div>
+              <div id="mock-hint-wrap" class="hint-field"><div class="hint-title"><label for="hint">Mock testing: item name</label><span class="small-pill">OPTIONAL</span></div><input id="hint" name="hint" type="text" maxlength="100" placeholder="e.g. aluminum can, coffee cup" autocomplete="off"><p>Only used with the mock recognition provider. This does not select a disposal bin.</p></div>
+              <button class="primary-button" id="classify-button" type="submit"><span id="classify-button-text">Identify &amp; Sort</span><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+              <div id="scan-error" class="inline-error" role="alert" hidden></div>
+            </form>
+          </article>
+          <article class="panel result-card" aria-labelledby="result-heading" aria-live="polite"><div class="panel-heading"><div><div class="step-label">02 / YOUR RESULT</div><h2 id="result-heading">Disposal guidance</h2></div><div class="badges" id="result-badges"></div></div>
+            <div id="result-empty" class="result-empty"><div class="result-empty-icon" aria-hidden="true">✳</div><strong>Ready when you are.</strong><span>Scan an item to see its identification and local disposal guidance here.</span></div>
+            <div id="result-content" hidden><div class="result-summary"><div class="bin-icon" id="bin-icon" aria-hidden="true">?</div><div><div class="result-kicker">RECOMMENDED ACTION</div><div class="bin-name" id="bin-name">UNKNOWN</div><div class="result-item" id="result-item">Item unknown</div></div></div><div class="result-details"><div><span>IDENTIFIED ITEM</span><strong id="item-value">—</strong></div><div><span>MATERIAL</span><strong id="material-value">—</strong></div></div><div class="result-message" id="result-message"></div><div class="clarification" id="clarification" hidden><span class="clarification-mark">?</span><div><strong>What to check</strong><p id="clarification-text"></p></div></div><div class="source-wrap" id="source-wrap" hidden><span>LOCAL RULE SOURCE</span><a href="#" id="source-link" rel="noopener noreferrer" target="_blank">View official guidance ↗</a></div><div class="hardware-feedback" id="hardware-feedback"></div><button type="button" class="secondary-button" id="scan-again">Scan another item ↗</button></div>
+          </article>
+        </div>
+        <aside class="side-column" aria-label="System information">
+          <article class="panel status-card"><div class="side-card-title"><h2>System status</h2><button type="button" class="icon-button" id="refresh-status" aria-label="Refresh system status" title="Refresh status">↻</button></div><p class="side-intro">Live view of your demo setup.</p><div class="status-rows"><div class="status-row"><span><span class="status-icon">◉</span> Pico hardware</span><strong id="hardware-status">Checking…</strong></div><div class="status-row"><span><span class="status-icon">◇</span> Recognition</span><strong id="provider-status">Checking…</strong></div><div class="status-row"><span><span class="status-icon">⌖</span> Rule location</span><strong id="location-status">Checking…</strong></div></div><div class="status-note" id="status-note">Mock hardware simulates responses; it does not light physical LEDs.</div></article>
+          <article class="why-card"><div class="why-icon">✳</div><h2>Why EcoSort?</h2><p>Recognizing an object is not the same as knowing where it goes.</p><div class="why-divider"></div><div class="why-step"><span>1</span><div><strong>Identify the item</strong><small>Our model names what it sees.</small></div></div><div class="why-step"><span>2</span><div><strong>Check local rules</strong><small>Your town's guidelines decide the bin.</small></div></div><div class="why-step"><span>3</span><div><strong>Never guess</strong><small>Unclear? We ask you to check.</small></div></div></article>
+        </aside>
+      </section>
+      <section class="hardware-section" id="hardware-controls" aria-labelledby="hardware-heading"><div class="hardware-section-head"><div><div class="step-label">03 / HARDWARE TESTING</div><h2 id="hardware-heading">Manual bin controls</h2><p>Test the Pico lights and LCD independently from image recognition.</p></div><span class="test-mode-tag">TEST MODE</span></div><div class="control-grid"><button class="control-button recycle" type="button" data-command="RECYCLE"><span class="control-symbol">♻</span><strong>Recycle</strong><small>Green LED</small></button><button class="control-button compost" type="button" data-command="COMPOST"><span class="control-symbol">❀</span><strong>Compost</strong><small>Yellow LED</small></button><button class="control-button landfill" type="button" data-command="LANDFILL"><span class="control-symbol">▤</span><strong>Landfill</strong><small>Red LED</small></button><button class="control-button unknown" type="button" data-command="UNKNOWN"><span class="control-symbol">?</span><strong>Unknown</strong><small>All LEDs blink</small></button><button class="control-button off" type="button" data-command="OFF"><span class="control-symbol">⏻</span><strong>Turn off</strong><small>Reset indicator</small></button></div><div class="command-console" aria-live="polite"><span class="console-label"><span class="console-dot"></span> LAST PICO RESPONSE</span><code id="command-response">Waiting for a command…</code></div></section>
+      <div class="footer-note"><strong>eco<span>sort.</span></strong><span>Built for HackPrinceton 2026 · Making the right choice easier.</span><span>Built to be honest about uncertainty.</span></div>
+    </main>
+  </div>
+</body>
+</html>
