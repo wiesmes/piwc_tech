@@ -33,6 +33,12 @@ ITEM_GROUPS = [
         "plastic water bottle",
         "plastic beverage bottle"
     },
+
+    {
+        "plastic utensils",
+        "plastic fork or spoon"
+    },
+    
     {
         "leftover salad",
         "food scraps",
@@ -124,5 +130,16 @@ def fuse_predictions(detection, classification):
     else:
         result["material_agreement"] = True
         result["fusion_status"] = "material_agreement"
+
+    # Model disagreements cannot be resolved by
+# answering a condition-related question.
+
+    if result["fusion_status"] == "model_disagreement":
+        result["clarification_type"] = "material"
+        result["required_attributes"] = []
+
+    elif result["fusion_status"] in {"item_disagreement", "unverified"}:
+        result["clarification_type"] = "identity"
+        result["required_attributes"] = []
 
     return result
