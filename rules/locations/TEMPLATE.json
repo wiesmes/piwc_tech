@@ -1,0 +1,25 @@
+{
+  "location_id": "PA_STATEWIDE",
+  "demo_only": false,
+  "program_id": "REPLACE_WITH_ONE_VERIFIED_PA_PROGRAM_ID",
+  "program_name": "REPLACE WITH OFFICIAL COLLECTION PROGRAM NAME",
+  "program_verified": false,
+  "program_source_url": "",
+  "program_verified_on": "YYYY-MM-DD",
+  "available_bins": [],
+  "compost_stream_confirmed": false,
+  "rules": [
+    {
+      "rule_id": "REPLACE_WITH_UNIQUE_LOCAL_ID",
+      "status": "UNVERIFIED",
+      "item": "REPLACE_WITH_RECOGNITION_LABEL",
+      "aliases": [],
+      "bin": "UNKNOWN",
+      "source_url": "",
+      "verified_on": "YYYY-MM-DD",
+      "requires": {"empty": true},
+      "question_when_missing": "Is this item empty?",
+      "message": "Replace with the wording supported by this program's official rule."
+    }
+  ]
+}
