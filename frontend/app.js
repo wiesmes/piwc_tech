@@ -3,6 +3,8 @@ const $ = id => document.getElementById(id);
 const MAX_BYTES = 10 * 1024 * 1024;
 let previewUrl = null;
 let busy = false;
+let buttonEventCount = 0;
+let buttonEventRequestInFlight = false;
 
 function messageFromError(response, data) {
   const detail = data?.detail;
@@ -27,6 +29,9 @@ async function refreshStatus() {
     const data = await response.json();
     if (!response.ok) throw new Error(messageFromError(response, data));
     const mode = modeOf(data);
+    $('camera-status').textContent = data.camera_connected === true
+      ? 'Camera connected.'
+      : 'Camera unavailable. You can still upload a photo to identify the item.';
     $('hardware-status').textContent = mode;
     const provider = String(providerOf(data));
     $('provider-status').textContent = provider.toUpperCase();
@@ -39,6 +44,7 @@ async function refreshStatus() {
       : mode === 'CONNECTED' ? 'Pico is connected. Manual buttons control the physical indicator.'
       : 'No physical Pico connection detected. You may still upload images to inspect recognition and rule results.';
   } catch(error) {
+    $('camera-status').textContent = 'Camera unavailable. You can still upload a photo to identify the item.';
     $('hardware-status').textContent = 'UNAVAILABLE';
     $('provider-status').textContent = '—';
     $('location-status').textContent = '—';
@@ -46,6 +52,35 @@ async function refreshStatus() {
   } finally { $('refresh-status').disabled = false; }
 }
 $('refresh-status').addEventListener('click', refreshStatus);
+
+async function refreshButtonEvents() {
+  if (buttonEventRequestInFlight) return;
+  buttonEventRequestInFlight = true;
+  try {
+    const response = await fetch('/api/events', {cache:'no-store'});
+    const data = await response.json();
+    if (!response.ok) throw new Error(messageFromError(response, data));
+    if (!Array.isArray(data.events)) throw new Error('Invalid button-event response');
+
+    const presses = data.events.filter(event => event === 'EVT BUTTON').length;
+    if (presses) {
+      buttonEventCount += presses;
+      const receivedAt = new Intl.DateTimeFormat(undefined, {
+        hour: 'numeric', minute: '2-digit', second: '2-digit'
+      }).format(new Date());
+      $('button-event-status').textContent =
+        `Physical button pressed · ${buttonEventCount} received · Last received ${receivedAt}`;
+    } else if (buttonEventCount === 0) {
+      $('button-event-status').textContent = 'Waiting for a physical button press.';
+    }
+  } catch(error) {
+    if (buttonEventCount === 0) {
+      $('button-event-status').textContent = `Button events unavailable: ${error.message}`;
+    }
+  } finally {
+    buttonEventRequestInFlight = false;
+  }
+}
 
 function setPhoto(file) {
   if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -147,3 +182,5 @@ document.querySelectorAll('[data-command]').forEach(button => button.addEventLis
   finally { document.querySelectorAll('[data-command]').forEach(b => b.disabled=false); refreshStatus(); }
 }));
 refreshStatus();
+refreshButtonEvents();
+setInterval(refreshButtonEvents, 500);
