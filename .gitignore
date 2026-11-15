@@ -23,3 +23,22 @@ outputs/
 .idea/
 .DS_Store
 Thumbs.db
+# AI datasets
+datasets/trashnet/
+datasets/realwaste/
+datasets/custom/
+
+# AI model weights
+models/clip-vit-base-patch32/
+*.safetensors
+*.pth
+*.pt
+*.zip
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
