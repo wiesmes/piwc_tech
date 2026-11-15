@@ -1,0 +1,17 @@
+.multi-results{display:grid;gap:12px}
+.multi-summary{margin:0;padding:12px 14px;border-radius:9px;background:#f4f7f1;color:#65776a;font-size:12px;line-height:1.6}
+.multi-result{min-width:0;padding:16px;border:1px solid var(--border);border-radius:11px;background:#fbfcfa}
+.multi-result-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.multi-result-heading h3{margin:0;font:800 15px/1.4 'Manrope',sans-serif;overflow-wrap:anywhere}
+.multi-material,.multi-explanation,.multi-question{font-size:12px;line-height:1.65}
+.multi-material{margin:7px 0;color:#77877b}
+.multi-explanation{margin:10px 0;color:#617368}
+.multi-question{margin:0 0 10px;padding:10px 12px;border-radius:8px;background:#fff7e4;color:#8c722d}
+.multi-result a{font-size:12px;font-weight:700;color:#386c44}
+.multi-result .rule-date{display:block;margin-top:8px;color:#8d988f}
+.bin-recycle{background:#e3f2e7;color:#328351}
+.bin-compost{background:#fff4d6;color:#97701c}
+.bin-landfill{background:#ffebe8;color:#b95d4e}
+.bin-unknown{background:#ecedf0;color:#6d7585}
+.rule-date{margin-top:8px;color:#8d988f;font-size:11px}
+.rule-date strong{font-weight:700}
