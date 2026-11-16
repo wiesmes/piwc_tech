@@ -11,6 +11,7 @@ from transformers import CLIPModel, CLIPProcessor
 from .labels import (
     LABELS,
     AMBIGUOUS_ITEMS,
+    CLARIFICATION_METADATA,
     MATERIAL_PROMPTS
 )
 
@@ -180,11 +181,36 @@ def recognize(image):
         uncertain = False
 
     question = None
+    clarification_type = None
+    required_attributes = []
 
     if uncertain:
         question = "Please reposition or identify the item."
+
+        if (
+            material == "unknown"
+            or not agreement
+            or material_confidence < MATERIAL_THRESHOLD
+            or material_margin < MARGIN_THRESHOLD
+            or object_material == "unknown"
+        ):
+            clarification_type = "material"
+
+        else:
+            clarification_type = "identity"
+
     elif item in AMBIGUOUS_ITEMS:
         question = AMBIGUOUS_ITEMS[item]
+
+        metadata = CLARIFICATION_METADATA.get(item, {})
+
+        clarification_type = metadata.get(
+            "clarification_type", "identity"
+        )
+
+        required_attributes = list(
+            metadata.get("required_attributes", [])
+        )
 
     needs_clarification = (
         uncertain or item in AMBIGUOUS_ITEMS
@@ -204,6 +230,8 @@ def recognize(image):
         "object_material": object_material,
         "prediction_agreement": agreement,
         "needs_clarification": needs_clarification,
+        "clarification_type": clarification_type,
+        "required_attributes": required_attributes,
         "question": question,
         "inference_time_seconds": round(
             time.perf_counter() - start, 3

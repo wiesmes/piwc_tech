@@ -9,8 +9,26 @@ from backend.config import Settings
 
 settings = Settings()
 hardware = MockSerialAdapter()
-recognizer = MockProvider()
-app = FastAPI(title='EcoSort Mock Demo')
+
+if settings.recognition_provider == "mock":
+
+    recognizer = MockProvider()
+
+elif settings.recognition_provider in {"single", "multi"}:
+
+    from backend.recognition.real_provider import RealProvider
+
+    recognizer = RealProvider(
+        mode=settings.recognition_provider
+    )
+
+else:
+    raise ValueError(
+        f"Unsupported recognition provider: "
+        f"{settings.recognition_provider}"
+    )
+
+app = FastAPI(title="EcoSort")
 
 @app.get('/api/status')
 def status():

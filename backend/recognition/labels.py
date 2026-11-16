@@ -44,6 +44,40 @@ AMBIGUOUS_ITEMS = {
 }
 
 
+CLARIFICATION_METADATA = {
+    "plastic water bottle": {
+        "clarification_type": "condition",
+        "required_attributes": ["empty"]
+    },
+
+    "disposable coffee cup": {
+        "clarification_type": "material",
+        "required_attributes": []
+    },
+
+    "plastic food container": {
+        "clarification_type": "material",
+        "required_attributes": []
+    },
+
+    "plastic snack wrapper": {
+        "clarification_type": "material",
+        "required_attributes": []
+    },
+
+    "plastic fork or spoon": {
+        "clarification_type": "material",
+        "required_attributes": []
+    },
+
+    "greasy pizza box": {
+        "clarification_type": "condition",
+        "required_attributes": ["food_soiled"]
+    }
+}
+
+
+
 MATERIAL_PROMPTS = {
     "plastic": [
         "plastic packaging",
